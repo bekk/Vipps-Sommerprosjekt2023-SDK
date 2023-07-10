@@ -4,6 +4,8 @@
 // </auto-generated>
 //----------------------
 
+using Vipps.net.Infrastructure;
+
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
 #pragma warning disable 472 // Disable "CS0472 The result of the expression is always 'false' since a value of type 'Int32' is never equal to 'null' of type 'Int32?'
@@ -293,7 +295,7 @@ namespace Vipps.net.Models.Login
         /// To retrieve a refresh token request the id_token scope.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("id_token", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long Id_token { get; set; }
+        public string Id_token { get; set; }
 
         /// <summary>
         /// The refresh token, which can be used to obtain new
@@ -430,7 +432,6 @@ namespace Vipps.net.Models.Login
         Basic,
         Post
     }
-
 }
 
 #pragma warning restore 1591

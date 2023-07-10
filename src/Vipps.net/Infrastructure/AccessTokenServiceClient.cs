@@ -18,7 +18,8 @@ namespace Vipps.net.Infrastructure
                 new Dictionary<string, string>
                 {
                     { Constants.HeaderNameClientId, VippsConfiguration.ClientId },
-                    { Constants.HeaderNameClientSecret, VippsConfiguration.ClientSecret }
+                    { Constants.HeaderNameClientSecret, VippsConfiguration.ClientSecret },
+                    {Constants.SubscriptionKey, VippsConfiguration.SubscriptionKey}
                 }
             );
         }

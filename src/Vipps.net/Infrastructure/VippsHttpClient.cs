@@ -41,17 +41,19 @@ namespace Vipps.net.Infrastructure
             CancellationToken cancellationToken
         )
         {
-            var headers = GetHeaders();
-            foreach (var header in headers)
-            {
-                if (request.Headers.Contains(header.Key))
+            
+                var headers = GetHeaders();
+                foreach (var header in headers)
                 {
-                    request.Headers.Remove(header.Key);
+                    if (request.Headers.Contains(header.Key))
+                    {
+                        request.Headers.Remove(header.Key);
+                    }
+                
+                    request.Headers.Add(header.Key, header.Value);
                 }
 
-                request.Headers.Add(header.Key, header.Value);
-            }
-
+                int i = 0;
             var response = await HttpClient
                 .SendAsync(request, cancellationToken)
                 .ConfigureAwait(false);
@@ -74,7 +76,6 @@ namespace Vipps.net.Infrastructure
             var assemblyName = typeof(VippsConfiguration).Assembly.GetName();
             return new Dictionary<string, string>
             {
-                { "Ocp-Apim-Subscription-Key", VippsConfiguration.SubscriptionKey },
                 { "Merchant-Serial-Number", VippsConfiguration.MerchantSerialNumber },
                 { "Vipps-System-Name", assemblyName.Name },
                 { "Vipps-System-Version", assemblyName.Version.ToString() },

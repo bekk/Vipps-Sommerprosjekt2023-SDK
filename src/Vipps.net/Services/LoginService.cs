@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using Vipps.net.Infrastructure;
@@ -25,6 +26,27 @@ namespace Vipps.net.Services
             }
 
             return startLoginUri; 
+        }
+
+        public static async Task<OauthTokenResponse> GetToken(Body getTokenRequest, AuthenticationMethod authenticationMethod,
+            CancellationToken cancellationToken = default)
+        {
+            var requestPath = "access-management-1.0/access/oauth2/token";
+            if (authenticationMethod == AuthenticationMethod.Post)
+            {
+                return await VippsServices.LoginServiceClientPost.ExecuteFormRequest<Body, OauthTokenResponse>(
+                    requestPath,
+                    HttpMethod.Post,
+                    getTokenRequest,
+                    cancellationToken
+                );  
+            }
+            return await VippsServices.LoginServiceClientBasic.ExecuteFormRequest<Body, OauthTokenResponse>(
+                requestPath,
+                HttpMethod.Post,
+                getTokenRequest,
+                cancellationToken
+            );
         }
     }
 }

@@ -1,13 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Globalization;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using Vipps.net.Exceptions;
 using Vipps.net.Helpers;
+using Vipps.net.Models.Login;
 
 namespace Vipps.net.Infrastructure
 {
@@ -39,6 +49,23 @@ namespace Vipps.net.Infrastructure
             );
         }
 
+        public async Task<TResponse> ExecuteFormRequest<TRequest, TResponse>(
+            string path,
+            HttpMethod httpMethod,
+            TRequest data,
+        CancellationToken cancellationToken = default
+        )
+            where TRequest : class
+            where TResponse : class
+        {
+            return await ExecuteRequestBaseAndParse<TResponse>(
+                path,
+                httpMethod,
+                CreateFormRequestContent(data),
+                cancellationToken
+            );
+        }
+        
         public async Task ExecuteRequest<TRequest>(
             string path,
             HttpMethod httpMethod,
@@ -191,6 +218,7 @@ namespace Vipps.net.Infrastructure
             {
                 return null;
             }
+
             var serializedRequest = VippsRequestSerializer.SerializeVippsRequest(vippsRequest);
             return new StringContent(serializedRequest, Encoding.UTF8, "application/json");
         }
@@ -203,6 +231,62 @@ namespace Vipps.net.Infrastructure
             }
 
             headers.Add(key, value);
+        }
+
+        
+        private static HttpContent CreateFormRequestContent<TRequest>(TRequest vippsRequest)
+            where TRequest : class
+        {
+            if (vippsRequest is null)
+            {
+                return null;
+            }
+
+            var keyValue = ToKeyValue(vippsRequest);
+            var urlEncodedContent = new FormUrlEncodedContent(keyValue);
+            
+            return new FormUrlEncodedContent(keyValue);
+        }
+        public static IDictionary<string, string> ToKeyValue(object metaToken)
+        {
+            if (metaToken == null)
+            {
+                return null;
+            }
+
+            JToken token = metaToken as JToken;
+            if (token == null)
+            {
+                return ToKeyValue(JObject.FromObject(metaToken));
+            }
+
+            if (token.HasValues)
+            {
+                var contentData = new Dictionary<string, string>();
+                foreach (var child in token.Children().ToList())
+                {
+                    var childContent = ToKeyValue(child);
+                    if (childContent != null)
+                    {
+                        contentData = contentData.Concat(childContent)
+                            .ToDictionary(k => k.Key, v => v.Value);
+                    }
+                }
+
+                return contentData;
+            }
+
+            var jValue = token as JValue;
+            if (jValue?.Value == null)
+            {
+                return null;
+            }
+
+            var value = jValue?.Type == JTokenType.Date ?
+                jValue?.ToString("o", CultureInfo.InvariantCulture) :
+                jValue?.ToString(CultureInfo.InvariantCulture);
+
+            return new Dictionary<string, string> { { token.Path, value } };
         }
     }
 }
