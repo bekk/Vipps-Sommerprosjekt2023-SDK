@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Vipps.net.Helpers;
-using Vipps.net.Models.Login;
 
 namespace Vipps.net.Infrastructure
 {

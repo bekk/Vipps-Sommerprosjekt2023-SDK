@@ -364,7 +364,7 @@ namespace Vipps.net.Models.Login
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v10.0.0.0))")]
-    public partial class Body
+    public partial class TokenRequest
     {
         /// <summary>
         /// Value MUST be authorization_code.

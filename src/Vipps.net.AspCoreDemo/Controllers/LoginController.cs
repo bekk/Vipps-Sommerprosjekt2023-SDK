@@ -26,7 +26,7 @@ namespace Vipps.net.AspCore31Demo.Controllers
             {
                 RedirectURI = "http://localhost:3000",
                 Scope = "openid email name phoneNumber",
-                AuthenticationMethod = AuthenticationMethod.Post
+                AuthenticationMethod = AuthenticationMethod.Basic
             };
             
             return LoginService.GetStartLoginUri(startLoginUriRequest);
@@ -36,15 +36,13 @@ namespace Vipps.net.AspCore31Demo.Controllers
         public async Task<OauthTokenResponse> GetToken(string code)
         {
 
-            Body getTokenRequest = new Body
+            TokenRequest getTokenRequest = new TokenRequest
             {
                 Grant_type = "authorization_code",
                 Redirect_uri = "http://localhost:3000",
-                Client_id = Environment.GetEnvironmentVariable("CLIENT_ID"),
-                Client_secret = Environment.GetEnvironmentVariable("CLIENT_SECRET"),
                 Code = code
             };
-            return await LoginService.GetToken(getTokenRequest,AuthenticationMethod.Post);
+            return await LoginService.GetToken(getTokenRequest,AuthenticationMethod.Basic);
         }
     }
 }

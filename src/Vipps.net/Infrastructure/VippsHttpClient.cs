@@ -53,7 +53,6 @@ namespace Vipps.net.Infrastructure
                     request.Headers.Add(header.Key, header.Value);
                 }
 
-                int i = 0;
             var response = await HttpClient
                 .SendAsync(request, cancellationToken)
                 .ConfigureAwait(false);

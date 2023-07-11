@@ -1,23 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 using Vipps.net.Exceptions;
 using Vipps.net.Helpers;
-using Vipps.net.Models.Login;
 
 namespace Vipps.net.Infrastructure
 {

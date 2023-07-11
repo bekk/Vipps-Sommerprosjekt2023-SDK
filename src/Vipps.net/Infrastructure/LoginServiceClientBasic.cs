@@ -4,7 +4,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Vipps.net.Helpers;
-using Vipps.net.Models.Login;
 
 namespace Vipps.net.Infrastructure
 {
@@ -20,17 +19,17 @@ namespace Vipps.net.Infrastructure
             return await Task.FromResult(
                 new Dictionary<string, string>
                 {
-                    {Constants.HeaderNameAuthorization, $"Basic {EncodeCredentials(Environment.GetEnvironmentVariable("CLIENT_ID"), Environment.GetEnvironmentVariable("CLIENT_SECRET"))}"}
+                    {Constants.HeaderNameAuthorization, $"Basic {EncodeCredentials(VippsConfiguration.ClientId, VippsConfiguration.ClientSecret)}"}
                 }
             );
         }
-        static string EncodeCredentials(string client_id, string client_secret)
+        private static string EncodeCredentials(string clientId, string clientSecret)
         {
-            string credentials = client_id + ":" + client_secret;
+            string credentials = clientId + ":" + clientSecret;
             byte[] credentialsBytes = Encoding.UTF8.GetBytes(credentials);
-            string client_authorization = Convert.ToBase64String(credentialsBytes);
+            string clientAuthorization = Convert.ToBase64String(credentialsBytes);
 
-            return client_authorization;
+            return clientAuthorization;
         }
     }
 }
