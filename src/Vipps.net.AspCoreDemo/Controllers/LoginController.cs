@@ -33,16 +33,39 @@ namespace Vipps.net.AspCore31Demo.Controllers
         }
 
         [HttpPost("/token/{code}")]
-        public async Task<OauthTokenResponse> GetToken(string code)
+        public async Task<OauthTokenResponse> GetWebLoginToken(string code)
         {
 
             TokenRequest getTokenRequest = new TokenRequest
             {
-                Grant_type = "authorization_code",
                 Redirect_uri = "http://localhost:3000",
                 Code = code
             };
-            return await LoginService.GetToken(getTokenRequest,AuthenticationMethod.Basic);
+            return await LoginService.GetWebLoginToken(getTokenRequest,AuthenticationMethod.Basic);
+        }
+
+        [HttpPost("/init-ciba")]
+        public async Task<InitCibaResponse> InitCiba()
+        {
+            InitCibaRequest initCibaRequest = new InitCibaRequest
+            {
+                Scope = "openid email name phoneNumber", 
+                PhoneNumber = "47375750", 
+                BindingMessage = "XYZ-123",
+            };
+            return await LoginService.InitCiba(initCibaRequest, AuthenticationMethod.Basic);
+        }
+
+        [HttpPost("/ciba-token-no-redirect{authReqId}")]
+        public async Task<OauthTokenResponse> GetCibaTokenNoRedirect(string authReqId)
+        {
+            return await LoginService.GetCibaTokenNoRedirect(authReqId, AuthenticationMethod.Basic);
+        }
+
+        [HttpPost("/ciba-token-redirect{code}")]
+        public async Task<OauthTokenResponse> GetCibaTokenRedirect(string code)
+        {
+            return await LoginService.GetCibaTokenRedirect(code, AuthenticationMethod.Basic);
         }
     }
 }

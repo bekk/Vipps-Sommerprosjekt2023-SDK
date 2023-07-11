@@ -4,6 +4,7 @@
 // </auto-generated>
 //----------------------
 
+using Newtonsoft.Json;
 using Vipps.net.Infrastructure;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
@@ -432,6 +433,83 @@ namespace Vipps.net.Models.Login
         Basic,
         Post
     }
+    
+    public partial class InitCibaRequest
+    {
+        public string Scope { get; set; }
+        public string PhoneNumber { get; set; }
+        public string BindingMessage { get; set; }
+
+        public string RedirectUri { get; set; }
+    }
+
+    public partial class InitCibaBody
+    {
+        [JsonProperty("scope")]
+        public string Scope { get; set; }
+        
+        [JsonProperty("login_hint")]
+        public string LoginHint { get; set; }
+        public string State { get; set; }
+        
+        [JsonProperty("binding_message")]
+        public string BindingMessage { get; set; }
+        
+        [JsonProperty("client_id")] 
+        public string ClientId { get; set; }
+        
+        [JsonProperty("client_secret")] 
+        public string ClientSecret { get; set; }
+        
+        [JsonProperty("requested_flow")]
+        public string RequestedFlow { get; set; }
+        
+        [JsonProperty("redirect_uri")]
+        public string RedirectUri { get; set; }
+    }
+    
+    public partial class InitCibaResponse
+    {
+        [JsonProperty("auth_req_id")]
+        public string AuthReqId { get; set; }
+        
+        
+        [JsonProperty("expires_in")]
+        public long ExpiresIn { get; set; }
+        
+        [JsonProperty("interval")]
+        public long Interval { get; set; }
+    }
+    
+    public partial class CibaTokenNoRedirectRequest
+    {
+        [JsonProperty("auth_req_id")]
+        public string AuthReqId { get; set; }
+        
+        [JsonProperty("grant_type")] 
+        public string GrantType { get; set; }
+        
+        [JsonProperty("client_id")] 
+        public string ClientId { get; set; }
+        
+        [JsonProperty("client_secret")] 
+        public string ClientSecret { get; set; }
+    }
+    
+    public partial class CibaTokenRedirectRequest                  
+    {                                                                
+        [JsonProperty("code")]                                
+        public string Code { get; set; }                        
+                                                                 
+        [JsonProperty("grant_type")]                                 
+        public string GrantType { get; set; }                        
+                                                                 
+        [JsonProperty("client_id")]                                  
+        public string ClientId { get; set; }                         
+                                                                 
+        [JsonProperty("client_secret")]                              
+        public string ClientSecret { get; set; }                     
+    }                                                                
 }
 
 #pragma warning restore 1591
