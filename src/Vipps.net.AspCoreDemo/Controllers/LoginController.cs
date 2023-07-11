@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Vipps.net.Models.Login;
@@ -24,10 +26,23 @@ namespace Vipps.net.AspCore31Demo.Controllers
             {
                 RedirectURI = "http://localhost:3000",
                 Scope = "openid email name phoneNumber",
-                AuthenticationMethod = AuthenticationMethod.Post
+                AuthenticationMethod = AuthenticationMethod.Basic
             };
             
             return LoginService.GetStartLoginUri(startLoginUriRequest);
+        }
+
+        [HttpPost("/token/{code}")]
+        public async Task<OauthTokenResponse> GetToken(string code)
+        {
+
+            TokenRequest getTokenRequest = new TokenRequest
+            {
+                Grant_type = "authorization_code",
+                Redirect_uri = "http://localhost:3000",
+                Code = code
+            };
+            return await LoginService.GetToken(getTokenRequest,AuthenticationMethod.Basic);
         }
     }
 }

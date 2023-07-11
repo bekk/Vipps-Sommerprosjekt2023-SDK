@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using dotenv.net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -23,6 +24,7 @@ namespace Vipps.net.AspCore31Demo
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            DotEnv.Load();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -53,6 +55,7 @@ namespace Vipps.net.AspCore31Demo
 
             app.UseAuthorization();
 
+            
             var vippsConfigurationOptions = new VippsConfigurationOptions
             {
                 PluginName = "Sommerprosjekt plugin",

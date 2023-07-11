@@ -23,7 +23,8 @@ namespace Vipps.net.Infrastructure
                     Constants.HeaderNameAuthorization,
                     $"{Constants.AuthorizationSchemeNameBearer} {authToken.Token}"
                 },
-                { "Idempotency-Key", Guid.NewGuid().ToString() }
+                { "Idempotency-Key", Guid.NewGuid().ToString() },
+                { Constants.SubscriptionKey, VippsConfiguration.SubscriptionKey }
             };
             return headers;
         }

@@ -50,19 +50,35 @@
             }
         }
         
-        private static LoginServiceClient _loginServiceClient;
-        internal static LoginServiceClient LoginServiceClient
+        private static LoginServiceClientPost _loginServiceClientPost;
+        internal static LoginServiceClientPost LoginServiceClientPost
         {
             get
             {
-                if (_loginServiceClient == null)
+                if (_loginServiceClientPost == null)
                 {
-                    _loginServiceClient = new LoginServiceClient(
+                    _loginServiceClientPost = new LoginServiceClientPost(
                         VippsConfiguration.VippsHttpClient
                     );
                 }
 
-                return _loginServiceClient;
+                return _loginServiceClientPost;
+            }
+        }
+        
+        private static LoginServiceClientBasic _loginServiceClientBasic;
+        internal static LoginServiceClientBasic LoginServiceClientBasic
+        {
+            get
+            {
+                if (_loginServiceClientBasic == null)
+                {
+                    _loginServiceClientBasic = new LoginServiceClientBasic(
+                        VippsConfiguration.VippsHttpClient
+                    );
+                }
+
+                return _loginServiceClientBasic;
             }
         }
     }
