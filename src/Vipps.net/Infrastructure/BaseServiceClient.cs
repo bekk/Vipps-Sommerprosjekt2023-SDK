@@ -236,8 +236,6 @@ namespace Vipps.net.Infrastructure
             }
 
             var keyValue = ToKeyValue(vippsRequest);
-            var urlEncodedContent = new FormUrlEncodedContent(keyValue);
-            
             return new FormUrlEncodedContent(keyValue);
         }
         public static IDictionary<string, string> ToKeyValue(object metaToken)
