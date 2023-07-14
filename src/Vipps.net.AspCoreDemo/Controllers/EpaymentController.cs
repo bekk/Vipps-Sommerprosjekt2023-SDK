@@ -11,6 +11,11 @@ namespace Vipps.net.AspCore31Demo.Controllers
     [Route("[controller]")]
     public class EpaymentController
     {
+        private readonly IVippsEpaymentService _epaymentService; 
+        public EpaymentController(IVippsEpaymentService vippsEpaymentService)
+        {
+            _epaymentService = vippsEpaymentService; 
+        }
         
         [HttpPost]
         public async Task<string> CreatePayment()
@@ -28,7 +33,7 @@ namespace Vipps.net.AspCore31Demo.Controllers
                 Profile = new ProfileRequest { Scope = "name phoneNumber address birthDate email" },
             };
             
-            var result = await EpaymentService.CreatePayment(request);
+            var result = await _epaymentService.CreatePayment(request);
             return result?.RedirectUrl.ToString();
         }
 

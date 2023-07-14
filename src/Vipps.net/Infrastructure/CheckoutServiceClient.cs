@@ -5,22 +5,28 @@ using Vipps.net.Helpers;
 
 namespace Vipps.net.Infrastructure
 {
-    internal sealed class CheckoutServiceClient : BaseServiceClient
+    public sealed class CheckoutServiceClient : BaseServiceClient
     {
-        internal CheckoutServiceClient(IVippsHttpClient vippsHttpClient)
-            : base(vippsHttpClient) { }
+        private readonly IVippsConfigurationProvider _vippsConfigurationProvider;
+
+        internal CheckoutServiceClient(IVippsHttpClient vippsHttpClient,
+            IVippsConfigurationProvider vippsConfigurationProvider)
+            : base(vippsHttpClient)
+        {
+            _vippsConfigurationProvider = vippsConfigurationProvider; 
+        }
 
         protected override async Task<Dictionary<string, string>> GetHeaders(
             CancellationToken cancellationToken
         )
         {
+            var options = _vippsConfigurationProvider.GetConfiguration(); 
             return await Task.FromResult(
                 new Dictionary<string, string>
                 {
-                    { Constants.HeaderNameClientId, VippsConfiguration.ClientId },
-                    { Constants.HeaderNameClientSecret, VippsConfiguration.ClientSecret },
-                    { Constants.SubscriptionKey, VippsConfiguration.SubscriptionKey },
-
+                    { Constants.HeaderNameClientId, options.ClientId },
+                    { Constants.HeaderNameClientSecret, options.ClientSecret },
+                    { Constants.SubscriptionKey, options.SubscriptionKey },
                 }
             );
         }

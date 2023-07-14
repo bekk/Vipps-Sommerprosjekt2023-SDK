@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Vipps.net.Infrastructure;
+using Vipps.net.Services;
 
 namespace Vipps.net.AspCore31Demo
 {
@@ -25,6 +26,22 @@ namespace Vipps.net.AspCore31Demo
         public void ConfigureServices(IServiceCollection services)
         {
             DotEnv.Load();
+            var vippsConfigurationOptions = new VippsConfigurationOptions
+            {
+                PluginName = "Sommerprosjekt plugin",
+                PluginVersion = "1.0.0",
+                ClientId = Environment.GetEnvironmentVariable("CLIENT_ID"),
+                ClientSecret = Environment.GetEnvironmentVariable("CLIENT_SECRET"),
+                MerchantSerialNumber = Environment.GetEnvironmentVariable("MSN"),
+                SubscriptionKey = Environment.GetEnvironmentVariable("OCP_APIM_SUBSCRIPTION_KEY"),
+                UseTestMode = true
+            };
+            
+            var vippsApi = VippsApi.Create(vippsConfigurationOptions);
+            services.AddSingleton(vippsApi.CheckoutService());
+            services.AddSingleton(vippsApi.EpaymentService());
+            services.AddSingleton(vippsApi.LoginService()); 
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -54,25 +71,7 @@ namespace Vipps.net.AspCore31Demo
             app.UseRouting();
 
             app.UseAuthorization();
-
             
-            var vippsConfigurationOptions = new VippsConfigurationOptions
-            {
-                PluginName = "Sommerprosjekt plugin",
-                PluginVersion = "1.0.0",
-                ClientId = Environment.GetEnvironmentVariable("CLIENT_ID"),
-                ClientSecret = Environment.GetEnvironmentVariable("CLIENT_SECRET"),
-                MerchantSerialNumber = Environment.GetEnvironmentVariable("MSN"),
-                SubscriptionKey = Environment.GetEnvironmentVariable("OCP_APIM_SUBSCRIPTION_KEY"),
-                UseTestMode = true
-            };
-
-            // The following line configures vipps with custom settings
-            VippsConfiguration.ConfigureVipps(
-                vippsConfigurationOptions,
-                app.ApplicationServices.GetService<ILoggerFactory>()
-            );
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

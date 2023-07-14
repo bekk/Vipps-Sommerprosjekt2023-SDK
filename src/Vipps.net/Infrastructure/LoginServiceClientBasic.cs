@@ -7,19 +7,26 @@ using Vipps.net.Helpers;
 
 namespace Vipps.net.Infrastructure
 {
-    internal sealed class LoginServiceClientBasic : BaseServiceClient
+    public sealed class LoginServiceClientBasic : BaseServiceClient
     {
-        internal LoginServiceClientBasic(IVippsHttpClient vippsHttpClient)
-            : base(vippsHttpClient) { }
+        private readonly IVippsConfigurationProvider _vippsConfigurationProvider;
+
+        internal LoginServiceClientBasic(IVippsHttpClient vippsHttpClient,
+            IVippsConfigurationProvider vippsConfigurationProvider)
+            : base(vippsHttpClient)
+        {
+            _vippsConfigurationProvider = vippsConfigurationProvider; 
+        }
 
         protected override async Task<Dictionary<string, string>> GetHeaders(
             CancellationToken cancellationToken 
-        )  
+        )
         {
+            var options = _vippsConfigurationProvider.GetConfiguration(); 
             return await Task.FromResult(
                 new Dictionary<string, string>
                 {
-                    {Constants.HeaderNameAuthorization, $"Basic {EncodeCredentials(VippsConfiguration.ClientId, VippsConfiguration.ClientSecret)}"}
+                    {Constants.HeaderNameAuthorization, $"Basic {EncodeCredentials(options.ClientId, options.ClientSecret)}"}
                 }
             );
         }

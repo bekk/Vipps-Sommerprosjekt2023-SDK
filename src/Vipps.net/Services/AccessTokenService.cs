@@ -6,26 +6,45 @@ using Vipps.net.Models.AccessToken;
 
 namespace Vipps.net.Services
 {
-    public static class AccessTokenService
+    public interface IVippsAccessTokenService
     {
-        public static async Task<AccessToken> GetAccessToken(
+        Task<AccessToken> GetAccessToken(
+            CancellationToken cancellationToken = default
+        );
+    }
+
+    public class AccessTokenService : IVippsAccessTokenService
+    {
+
+        private readonly IVippsConfigurationProvider _vippsConfigurationProvider;
+        private readonly AccessTokenServiceClient _accessTokenServiceClient;
+        private readonly AccessTokenCacheService _accessTokenCacheService; 
+        public AccessTokenService(IVippsConfigurationProvider vippsConfigurationProvider, AccessTokenServiceClient accessTokenServiceClient, AccessTokenCacheService accessTokenCacheService)
+        {
+            _vippsConfigurationProvider = vippsConfigurationProvider;
+            _accessTokenServiceClient = accessTokenServiceClient;
+            _accessTokenCacheService = accessTokenCacheService; 
+        }
+        
+        public async Task<AccessToken> GetAccessToken(
             CancellationToken cancellationToken = default
         )
         {
-            var key = $"{VippsConfiguration.ClientId}{VippsConfiguration.ClientSecret}";
-            var cachedToken = AccessTokenCacheService.Get(key);
+            var options = _vippsConfigurationProvider.GetConfiguration(); 
+            var key = $"{options.ClientId}{options.ClientSecret}";
+            var cachedToken = _accessTokenCacheService.Get(key);
             if (cachedToken != null)
             {
                 return cachedToken;
             }
 
             var accessToken =
-                await VippsServices.AccessTokenServiceClient.ExecuteRequest<AccessToken>(
+                await _accessTokenServiceClient.ExecuteRequest<AccessToken>(
                     "/accesstoken/get",
                     HttpMethod.Post,
                     cancellationToken
                 );
-            AccessTokenCacheService.Add(key, accessToken);
+            _accessTokenCacheService.Add(key, accessToken);
             return accessToken;
         }
     }
