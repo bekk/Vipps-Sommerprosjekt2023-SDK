@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Vipps.net.Infrastructure
 {
-    public sealed class LoginServiceClientPost : BaseServiceClient
+    internal sealed class LoginServiceClientPost : BaseServiceClient
     {
         internal LoginServiceClientPost(IVippsHttpClient vippsHttpClient)
             : base(vippsHttpClient) { }

@@ -52,7 +52,7 @@ namespace Vipps.net.AspCore31Demo.Controllers
             InitCibaRequest initCibaRequest = new InitCibaRequest
             {
                 Scope = "openid email name phoneNumber", 
-                PhoneNumber = "40285760", 
+                PhoneNumber = "12345678", 
                 BindingMessage = "XYZ-123",
             };
             return await _loginService.InitCiba(initCibaRequest, AuthenticationMethod.Basic);

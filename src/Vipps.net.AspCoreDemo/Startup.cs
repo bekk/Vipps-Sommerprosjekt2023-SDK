@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Reflection;
 using dotenv.net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Vipps.net.Infrastructure;
-using Vipps.net.Services;
 
 namespace Vipps.net.AspCore31Demo
 {
@@ -38,6 +35,7 @@ namespace Vipps.net.AspCore31Demo
             };
             
             var vippsApi = VippsApi.Create(vippsConfigurationOptions);
+
             services.AddSingleton(vippsApi.CheckoutService());
             services.AddSingleton(vippsApi.EpaymentService());
             services.AddSingleton(vippsApi.LoginService()); 

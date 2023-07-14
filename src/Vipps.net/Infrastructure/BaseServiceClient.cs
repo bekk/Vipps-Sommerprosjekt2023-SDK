@@ -14,7 +14,7 @@ using Vipps.net.Helpers;
 
 namespace Vipps.net.Infrastructure
 {
-    public abstract class BaseServiceClient
+    internal abstract class BaseServiceClient
     {
         protected readonly IVippsHttpClient _vippsHttpClient;
         protected readonly ILogger _logger;

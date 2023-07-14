@@ -5,28 +5,27 @@ using Vipps.net.Helpers;
 
 namespace Vipps.net.Infrastructure
 {
-    public sealed class AccessTokenServiceClient : BaseServiceClient
+    internal sealed class AccessTokenServiceClient : BaseServiceClient
     {
-        private readonly IVippsConfigurationProvider _vippsConfigurationProvider;
+        private readonly VippsConfigurationOptions _vippsConfigurationOptions;
 
-        public AccessTokenServiceClient(IVippsHttpClient vippsHttpClient,
-            IVippsConfigurationProvider vippsConfigurationProvider)
+        internal AccessTokenServiceClient(IVippsHttpClient vippsHttpClient,
+            VippsConfigurationOptions vippsConfigurationOptions)
             : base(vippsHttpClient)
         {
-            _vippsConfigurationProvider = vippsConfigurationProvider; 
+            _vippsConfigurationOptions = vippsConfigurationOptions; 
         }
 
         protected override async Task<Dictionary<string, string>> GetHeaders(
             CancellationToken cancellationToken
         )
         {
-            var options = _vippsConfigurationProvider.GetConfiguration(); 
             return await Task.FromResult(
                 new Dictionary<string, string>
                 {
-                    { Constants.HeaderNameClientId, options.ClientId },
-                    { Constants.HeaderNameClientSecret, options.ClientSecret },
-                    { Constants.SubscriptionKey, options.SubscriptionKey }
+                    { Constants.HeaderNameClientId, _vippsConfigurationOptions.ClientId },
+                    { Constants.HeaderNameClientSecret, _vippsConfigurationOptions.ClientSecret },
+                    { Constants.SubscriptionKey, _vippsConfigurationOptions.SubscriptionKey }
                 }
             );
         }

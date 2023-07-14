@@ -16,30 +16,24 @@ namespace Vipps.net
 
     public class VippsApi : IVippsApi
     {
-        private readonly IVippsConfigurationProvider configurationProvider;
+        private readonly VippsConfigurationOptions _vippsConfigurationOptions; 
         private VippsHttpClient _vippsHttpClient;
         private ILoggerFactory _loggerFactory;
-        private readonly AccessTokenService _accessTokenService;
-
-        public static IVippsApi Create(IVippsConfigurationProvider configurationProvider,
-            ILoggerFactory loggerFactory = null)
-        {
-            return new VippsApi(configurationProvider, loggerFactory);
-        }
-
+        private readonly VippsAccessTokenService _accessTokenService;
+        
         public static IVippsApi Create(VippsConfigurationOptions options, ILoggerFactory loggerFactory = null)
         {
-            return new VippsApi(new DefaultVippsConfigurationProvider(options), loggerFactory);
+            return new VippsApi(options, loggerFactory);
         }
 
-        private VippsApi(IVippsConfigurationProvider configurationProvider, ILoggerFactory loggerFactory = null)
+        private VippsApi(VippsConfigurationOptions configurationOptions, ILoggerFactory loggerFactory = null)
         {
             _loggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
-            this.configurationProvider = configurationProvider;
-            _vippsHttpClient = new VippsHttpClient(new HttpClient(), configurationProvider.GetConfiguration());
+            this._vippsConfigurationOptions = configurationOptions;
+            _vippsHttpClient = new VippsHttpClient(new HttpClient(), configurationOptions);
 
-            _accessTokenService = new AccessTokenService(configurationProvider,
-                new AccessTokenServiceClient(_vippsHttpClient, this.configurationProvider),
+            _accessTokenService = new VippsAccessTokenService(configurationOptions,
+                new AccessTokenServiceClient(_vippsHttpClient, configurationOptions),
                 new AccessTokenCacheService());
         }
 
@@ -50,20 +44,20 @@ namespace Vipps.net
 
         public IVippsEpaymentService EpaymentService()
         {
-            return new EpaymentService(new EpaymentServiceClient(_vippsHttpClient, configurationProvider,
+            return new VippsEpaymentService(new EpaymentServiceClient(_vippsHttpClient, _vippsConfigurationOptions,
                 _accessTokenService));
         }
 
         public IVippsLoginService LoginService()
         {
-            return new LoginService(configurationProvider
-                , new LoginServiceClientBasic(_vippsHttpClient, configurationProvider),
+            return new VippsLoginService(_vippsConfigurationOptions
+                , new LoginServiceClientBasic(_vippsHttpClient, _vippsConfigurationOptions),
                 new LoginServiceClientPost(_vippsHttpClient));
         }
 
         public IVippsCheckoutService CheckoutService()
         {
-            return new CheckoutService(new CheckoutServiceClient(_vippsHttpClient, configurationProvider));
+            return new VippsCheckoutService(new CheckoutServiceClient(_vippsHttpClient, _vippsConfigurationOptions));
         }
     }
 }

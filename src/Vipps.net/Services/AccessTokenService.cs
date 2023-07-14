@@ -13,15 +13,14 @@ namespace Vipps.net.Services
         );
     }
 
-    public class AccessTokenService : IVippsAccessTokenService
+    internal sealed class VippsAccessTokenService : IVippsAccessTokenService
     {
 
-        private readonly IVippsConfigurationProvider _vippsConfigurationProvider;
+        private readonly VippsConfigurationOptions _vippsConfigurationOptions;
         private readonly AccessTokenServiceClient _accessTokenServiceClient;
         private readonly AccessTokenCacheService _accessTokenCacheService; 
-        public AccessTokenService(IVippsConfigurationProvider vippsConfigurationProvider, AccessTokenServiceClient accessTokenServiceClient, AccessTokenCacheService accessTokenCacheService)
-        {
-            _vippsConfigurationProvider = vippsConfigurationProvider;
+        public VippsAccessTokenService(VippsConfigurationOptions vippsConfigurationOptions, AccessTokenServiceClient accessTokenServiceClient, AccessTokenCacheService accessTokenCacheService){
+            _vippsConfigurationOptions = vippsConfigurationOptions;
             _accessTokenServiceClient = accessTokenServiceClient;
             _accessTokenCacheService = accessTokenCacheService; 
         }
@@ -30,8 +29,7 @@ namespace Vipps.net.Services
             CancellationToken cancellationToken = default
         )
         {
-            var options = _vippsConfigurationProvider.GetConfiguration(); 
-            var key = $"{options.ClientId}{options.ClientSecret}";
+            var key = $"{_vippsConfigurationOptions.ClientId}{_vippsConfigurationOptions.ClientSecret}";
             var cachedToken = _accessTokenCacheService.Get(key);
             if (cachedToken != null)
             {

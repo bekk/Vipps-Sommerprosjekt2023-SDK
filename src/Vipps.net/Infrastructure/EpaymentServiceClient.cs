@@ -7,16 +7,16 @@ using Vipps.net.Services;
 
 namespace Vipps.net.Infrastructure
 {
-    public sealed class EpaymentServiceClient : BaseServiceClient
+    internal sealed class EpaymentServiceClient : BaseServiceClient
     {
-        private readonly IVippsConfigurationProvider _vippsConfigurationProvider;
-        private readonly AccessTokenService _accessTokenService; 
+        private readonly VippsConfigurationOptions _vippsConfigurationOptions;
+        private readonly VippsAccessTokenService _accessTokenService; 
 
-        public EpaymentServiceClient(IVippsHttpClient vippsHttpClient,
-            IVippsConfigurationProvider vippsConfigurationProvider, AccessTokenService accessTokenService)
+        internal EpaymentServiceClient(IVippsHttpClient vippsHttpClient,
+            VippsConfigurationOptions vippsConfigurationOptions, VippsAccessTokenService accessTokenService)
             : base(vippsHttpClient)
         {
-            _vippsConfigurationProvider = vippsConfigurationProvider;
+            _vippsConfigurationOptions = vippsConfigurationOptions;
             _accessTokenService = accessTokenService; 
         }
 
@@ -32,7 +32,7 @@ namespace Vipps.net.Infrastructure
                     $"{Constants.AuthorizationSchemeNameBearer} {authToken.Token}"
                 },
                 { "Idempotency-Key", Guid.NewGuid().ToString() },
-                { Constants.SubscriptionKey, _vippsConfigurationProvider.GetConfiguration().SubscriptionKey }
+                { Constants.SubscriptionKey, _vippsConfigurationOptions.SubscriptionKey }
             };
             return headers;
         }

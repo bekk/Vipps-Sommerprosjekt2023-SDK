@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Vipps.net.Helpers;
 
 namespace Vipps.net.Infrastructure
 {
@@ -12,10 +13,6 @@ namespace Vipps.net.Infrastructure
         private readonly TimeSpan DefaultTimeOut = TimeSpan.FromSeconds(100);
         private readonly VippsConfigurationOptions _options;
         
-        private string BaseUrl => _options.UseTestMode 
-            ? "https://apitest.vipps.no" 
-            : "https://api.vipps.no";
-
         public VippsHttpClient(HttpClient httpClient, VippsConfigurationOptions options)
         {
             _httpClient = httpClient;
@@ -24,7 +21,7 @@ namespace Vipps.net.Infrastructure
 
         public Uri BaseAddress
         {
-            get { return new Uri(BaseUrl); }
+            get { return new Uri(UrlHelper.GetBaseUrl(_options.UseTestMode)); }
         }
 
         internal HttpClient HttpClient
@@ -68,7 +65,7 @@ namespace Vipps.net.Infrastructure
             var httpClient = new HttpClient()
             {
                 Timeout = DefaultTimeOut,
-                BaseAddress = new Uri(BaseUrl)
+                BaseAddress = new Uri(UrlHelper.GetBaseUrl(_options.UseTestMode))
             };
 
             return httpClient;

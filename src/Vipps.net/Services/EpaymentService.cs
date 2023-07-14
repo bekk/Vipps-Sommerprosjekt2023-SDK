@@ -48,12 +48,12 @@ namespace Vipps.net.Services
         );
     }
 
-    public class EpaymentService : IVippsEpaymentService
+    internal sealed class VippsEpaymentService : IVippsEpaymentService
     {
 
         private readonly EpaymentServiceClient _epaymentServiceClient; 
 
-        public EpaymentService(EpaymentServiceClient epaymentServiceClient)
+        public VippsEpaymentService(EpaymentServiceClient epaymentServiceClient)
         {
             _epaymentServiceClient = epaymentServiceClient;
         }
