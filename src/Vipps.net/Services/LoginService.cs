@@ -10,7 +10,7 @@ namespace Vipps.net.Services
 {
     public interface IVippsLoginService
     {
-        string GetStartLoginUri(StartLoginURIRequest startLoginUriRequest, CancellationToken cancellationToken = default);
+        string GetStartLoginUri(StartLoginURIRequest startLoginUriRequest, AuthenticationMethod authenticationMethod, CancellationToken cancellationToken = default);
 
         Task<OauthTokenResponse> GetWebLoginToken(TokenRequest getTokenRequest, AuthenticationMethod authenticationMethod,
             CancellationToken cancellationToken = default);
@@ -37,7 +37,7 @@ namespace Vipps.net.Services
             _loginServiceClientPost = loginServiceClientPost;
         }
         
-        public string GetStartLoginUri(StartLoginURIRequest startLoginUriRequest, CancellationToken cancellationToken = default)
+        public string GetStartLoginUri(StartLoginURIRequest startLoginUriRequest, AuthenticationMethod authenticationMethod, CancellationToken cancellationToken = default)
         {
             var baseUrl = UrlHelper.GetBaseUrl(_vippsConfigurationOptions.UseTestMode);
             string startLoginUri = $"{baseUrl}/access-management-1.0/access/oauth2/auth" +
@@ -47,7 +47,7 @@ namespace Vipps.net.Services
                                    $"&state={Guid.NewGuid().ToString()}" +
                                    $"&redirect_uri={startLoginUriRequest.RedirectURI}";
             
-            if (startLoginUriRequest.AuthenticationMethod == AuthenticationMethod.Post)
+            if (authenticationMethod == AuthenticationMethod.Post)
             {
                 startLoginUri = $"{startLoginUri}&response_mode=form_post";
             }

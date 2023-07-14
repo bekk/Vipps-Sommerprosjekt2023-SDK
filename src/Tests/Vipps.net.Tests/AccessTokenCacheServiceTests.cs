@@ -11,7 +11,7 @@ namespace Vipps.net.Tests
         [TestMethod]
         public void Can_Retrieve_Saved_Valid()
         {
-            AccessTokenCacheService accessTokenCacheService = new AccessTokenCacheService(); 
+            var accessTokenCacheService = new AccessTokenCacheService(); 
             var key = Guid.NewGuid().ToString();
             var accessToken = GetToken(DateTime.Now.AddHours(-1), DateTime.Now.AddHours(1));
             accessTokenCacheService.Add(key, accessToken);

@@ -28,10 +28,9 @@ namespace Vipps.net.AspCore31Demo.Controllers
             {
                 RedirectURI = "http://localhost:3000",
                 Scope = "openid email name phoneNumber",
-                AuthenticationMethod = AuthenticationMethod.Basic
             };
             
-            return _loginService.GetStartLoginUri(startLoginUriRequest);
+            return _loginService.GetStartLoginUri(startLoginUriRequest, AuthenticationMethod.Basic);
         }
 
         [HttpPost("/token/{code}")]
