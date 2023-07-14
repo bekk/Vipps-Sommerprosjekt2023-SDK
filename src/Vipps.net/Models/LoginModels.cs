@@ -425,7 +425,7 @@ namespace Vipps.net.Models.Login
     {
         public string Scope { get; set; }
         public string RedirectURI { get; set; }
-        public AuthenticationMethod AuthenticationMethod { get; set; }
+        
     }
     
     public enum AuthenticationMethod

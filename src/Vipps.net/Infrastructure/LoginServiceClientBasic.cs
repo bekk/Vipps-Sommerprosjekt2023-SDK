@@ -9,17 +9,23 @@ namespace Vipps.net.Infrastructure
 {
     internal sealed class LoginServiceClientBasic : BaseServiceClient
     {
-        internal LoginServiceClientBasic(IVippsHttpClient vippsHttpClient)
-            : base(vippsHttpClient) { }
+        private readonly VippsConfigurationOptions _vippsConfigurationOptions;
+
+        internal LoginServiceClientBasic(IVippsHttpClient vippsHttpClient,
+            VippsConfigurationOptions vippsConfigurationOptions)
+            : base(vippsHttpClient)
+        {
+            _vippsConfigurationOptions = vippsConfigurationOptions; 
+        }
 
         protected override async Task<Dictionary<string, string>> GetHeaders(
             CancellationToken cancellationToken 
-        )  
+        )
         {
             return await Task.FromResult(
                 new Dictionary<string, string>
                 {
-                    {Constants.HeaderNameAuthorization, $"Basic {EncodeCredentials(VippsConfiguration.ClientId, VippsConfiguration.ClientSecret)}"}
+                    {Constants.HeaderNameAuthorization, $"Basic {EncodeCredentials(_vippsConfigurationOptions.ClientId, _vippsConfigurationOptions.ClientSecret)}"}
                 }
             );
         }

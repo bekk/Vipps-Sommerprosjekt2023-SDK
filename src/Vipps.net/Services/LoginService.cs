@@ -1,27 +1,53 @@
 ﻿using System;
 using System.Net.Http;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
-using Polly.Retry;
+using Vipps.net.Helpers;
 using Vipps.net.Infrastructure;
 using Vipps.net.Models.Login;
 
 namespace Vipps.net.Services
 {
-
-    public class LoginService
+    public interface IVippsLoginService
     {
-        public static string GetStartLoginUri(StartLoginURIRequest startLoginUriRequest, CancellationToken cancellationToken = default)
+        string GetStartLoginUri(StartLoginURIRequest startLoginUriRequest, AuthenticationMethod authenticationMethod, CancellationToken cancellationToken = default);
+
+        Task<OauthTokenResponse> GetWebLoginToken(TokenRequest getTokenRequest, AuthenticationMethod authenticationMethod,
+            CancellationToken cancellationToken = default);
+
+        Task<InitCibaResponse> InitCiba(InitCibaRequest initCibaRequest,
+            AuthenticationMethod authenticationMethod, CancellationToken cancellationToken = default);
+
+        Task<OauthTokenResponse> GetCibaTokenNoRedirect(string authReqId, 
+            AuthenticationMethod authenticationMethod, CancellationToken cancellationToken = default);
+
+        Task<OauthTokenResponse> GetCibaTokenRedirect(string code,
+            AuthenticationMethod authenticationMethod, CancellationToken cancellationToken = default);
+    }
+
+    internal sealed class VippsLoginService : IVippsLoginService
+    {
+        private readonly VippsConfigurationOptions _vippsConfigurationOptions;
+        private readonly LoginServiceClientBasic _loginServiceClientBasic;
+        private readonly LoginServiceClientPost _loginServiceClientPost; 
+        internal VippsLoginService(VippsConfigurationOptions vippsConfigurationOptions, LoginServiceClientBasic loginServiceClientBasic, LoginServiceClientPost loginServiceClientPost)
         {
-            string startLoginUri = $"{VippsConfiguration.BaseUrl}/access-management-1.0/access/oauth2/auth" +
-                                   $"?client_id={VippsConfiguration.ClientId}" +
+            _vippsConfigurationOptions = vippsConfigurationOptions;
+            _loginServiceClientBasic = loginServiceClientBasic;
+            _loginServiceClientPost = loginServiceClientPost;
+        }
+        
+        public string GetStartLoginUri(StartLoginURIRequest startLoginUriRequest, AuthenticationMethod authenticationMethod, CancellationToken cancellationToken = default)
+        {
+            var baseUrl = UrlHelper.GetBaseUrl(_vippsConfigurationOptions.UseTestMode);
+            string startLoginUri = $"{baseUrl}/access-management-1.0/access/oauth2/auth" +
+                                   $"?client_id={_vippsConfigurationOptions.ClientId}" +
                                    $"&response_type=code" +
                                    $"&scope={startLoginUriRequest.Scope}" +
                                    $"&state={Guid.NewGuid().ToString()}" +
                                    $"&redirect_uri={startLoginUriRequest.RedirectURI}";
             
-            if (startLoginUriRequest.AuthenticationMethod == AuthenticationMethod.Post)
+            if (authenticationMethod == AuthenticationMethod.Post)
             {
                 startLoginUri = $"{startLoginUri}&response_mode=form_post";
             }
@@ -29,23 +55,23 @@ namespace Vipps.net.Services
             return startLoginUri; 
         }
 
-        public static async Task<OauthTokenResponse> GetWebLoginToken(TokenRequest getTokenRequest, AuthenticationMethod authenticationMethod,
+        public async Task<OauthTokenResponse> GetWebLoginToken(TokenRequest getTokenRequest, AuthenticationMethod authenticationMethod,
             CancellationToken cancellationToken = default)
         {
             var requestPath = "access-management-1.0/access/oauth2/token";
             getTokenRequest.Grant_type = "authorization_code";
             if (authenticationMethod == AuthenticationMethod.Post)
             {
-                getTokenRequest.Client_id = VippsConfiguration.ClientId;
-                getTokenRequest.Client_secret = VippsConfiguration.ClientSecret;
-                return await VippsServices.LoginServiceClientPost.ExecuteFormRequest<TokenRequest, OauthTokenResponse>(
+                getTokenRequest.Client_id = _vippsConfigurationOptions.ClientId;
+                getTokenRequest.Client_secret = _vippsConfigurationOptions.ClientSecret;
+                return await _loginServiceClientPost.ExecuteFormRequest<TokenRequest, OauthTokenResponse>(
                     requestPath,
                     HttpMethod.Post,
                     getTokenRequest,
                     cancellationToken
                 );  
             }
-            return await VippsServices.LoginServiceClientBasic.ExecuteFormRequest<TokenRequest, OauthTokenResponse>(
+            return await _loginServiceClientBasic.ExecuteFormRequest<TokenRequest, OauthTokenResponse>(
                 requestPath,
                 HttpMethod.Post,
                 getTokenRequest,
@@ -53,7 +79,7 @@ namespace Vipps.net.Services
             );
         }
 
-        public static async Task<InitCibaResponse> InitCiba(InitCibaRequest initCibaRequest,
+        public async Task<InitCibaResponse> InitCiba(InitCibaRequest initCibaRequest,
             AuthenticationMethod authenticationMethod, CancellationToken cancellationToken = default)
         {
             var initCibaBody = new InitCibaBody
@@ -75,16 +101,16 @@ namespace Vipps.net.Services
 
             if (authenticationMethod == AuthenticationMethod.Post)
             {
-                initCibaBody.ClientId = VippsConfiguration.ClientId;
-                initCibaBody.ClientSecret = VippsConfiguration.ClientSecret;
-                return await VippsServices.LoginServiceClientPost.ExecuteFormRequest<InitCibaBody, InitCibaResponse>(
+                initCibaBody.ClientId = _vippsConfigurationOptions.ClientId;
+                initCibaBody.ClientSecret = _vippsConfigurationOptions.ClientSecret;
+                return await _loginServiceClientPost.ExecuteFormRequest<InitCibaBody, InitCibaResponse>(
                     requestPath,
                     HttpMethod.Post,
                     initCibaBody,
                     cancellationToken
                 );  
             }
-            return await VippsServices.LoginServiceClientBasic.ExecuteFormRequest<InitCibaBody, InitCibaResponse>(
+            return await _loginServiceClientBasic.ExecuteFormRequest<InitCibaBody, InitCibaResponse>(
                 requestPath,
                 HttpMethod.Post,
                 initCibaBody,
@@ -92,7 +118,7 @@ namespace Vipps.net.Services
             );
         }
 
-        public static async Task<OauthTokenResponse> GetCibaTokenNoRedirect(string authReqId, 
+        public async Task<OauthTokenResponse> GetCibaTokenNoRedirect(string authReqId, 
             AuthenticationMethod authenticationMethod, CancellationToken cancellationToken = default)
         {
             var cibaTokenRequest = new CibaTokenNoRedirectRequest
@@ -104,16 +130,16 @@ namespace Vipps.net.Services
 
             if (authenticationMethod == AuthenticationMethod.Post)
             {
-                cibaTokenRequest.ClientId = VippsConfiguration.ClientId;
-                cibaTokenRequest.ClientSecret = VippsConfiguration.ClientSecret;
-                return await VippsServices.LoginServiceClientPost.ExecuteFormRequest<CibaTokenNoRedirectRequest, OauthTokenResponse>(
+                cibaTokenRequest.ClientId = _vippsConfigurationOptions.ClientId;
+                cibaTokenRequest.ClientSecret = _vippsConfigurationOptions.ClientSecret;
+                return await _loginServiceClientPost.ExecuteFormRequest<CibaTokenNoRedirectRequest, OauthTokenResponse>(
                     requestPath,
                     HttpMethod.Post,
                     cibaTokenRequest,
                     cancellationToken
                 );
             }
-            return await VippsServices.LoginServiceClientBasic.ExecuteFormRequest<CibaTokenNoRedirectRequest, OauthTokenResponse>(
+            return await _loginServiceClientBasic.ExecuteFormRequest<CibaTokenNoRedirectRequest, OauthTokenResponse>(
                 requestPath,
                 HttpMethod.Post,
                 cibaTokenRequest,
@@ -121,7 +147,7 @@ namespace Vipps.net.Services
             );
         }
 
-        public static async Task<OauthTokenResponse> GetCibaTokenRedirect(string code,
+        public async Task<OauthTokenResponse> GetCibaTokenRedirect(string code,
             AuthenticationMethod authenticationMethod, CancellationToken cancellationToken = default)
         {
             var cibaTokenRequest = new CibaTokenRedirectRequest
@@ -132,16 +158,16 @@ namespace Vipps.net.Services
             
             if (authenticationMethod == AuthenticationMethod.Post)
             {
-                cibaTokenRequest.ClientId = VippsConfiguration.ClientId;
-                cibaTokenRequest.ClientSecret = VippsConfiguration.ClientSecret;
-                return await VippsServices.LoginServiceClientPost.ExecuteFormRequest<CibaTokenRedirectRequest, OauthTokenResponse>(
+                cibaTokenRequest.ClientId = _vippsConfigurationOptions.ClientId;
+                cibaTokenRequest.ClientSecret = _vippsConfigurationOptions.ClientSecret;
+                return await _loginServiceClientPost.ExecuteFormRequest<CibaTokenRedirectRequest, OauthTokenResponse>(
                     requestPath,
                     HttpMethod.Post,
                     cibaTokenRequest,
                     cancellationToken
                 );
             }
-            return await VippsServices.LoginServiceClientBasic.ExecuteFormRequest<CibaTokenRedirectRequest, OauthTokenResponse>(
+            return await _loginServiceClientBasic.ExecuteFormRequest<CibaTokenRedirectRequest, OauthTokenResponse>(
                 requestPath,
                 HttpMethod.Post,
                 cibaTokenRequest,

@@ -13,10 +13,12 @@ namespace Vipps.net.AspCore31Demo.Controllers
     public class LoginController : ControllerBase
     {
         private readonly ILogger<CheckoutController> _logger;
+        private readonly IVippsLoginService _loginService; 
 
-        public LoginController(ILogger<CheckoutController> logger)
+        public LoginController(ILogger<CheckoutController> logger, IVippsLoginService loginService)
         {
             _logger = logger;
+            _loginService = loginService; 
         }
 
         [HttpGet]
@@ -26,10 +28,9 @@ namespace Vipps.net.AspCore31Demo.Controllers
             {
                 RedirectURI = "http://localhost:3000",
                 Scope = "openid email name phoneNumber",
-                AuthenticationMethod = AuthenticationMethod.Basic
             };
             
-            return LoginService.GetStartLoginUri(startLoginUriRequest);
+            return _loginService.GetStartLoginUri(startLoginUriRequest, AuthenticationMethod.Basic);
         }
 
         [HttpPost("/token/{code}")]
@@ -41,7 +42,7 @@ namespace Vipps.net.AspCore31Demo.Controllers
                 Redirect_uri = "http://localhost:3000",
                 Code = code
             };
-            return await LoginService.GetWebLoginToken(getTokenRequest,AuthenticationMethod.Basic);
+            return await _loginService.GetWebLoginToken(getTokenRequest,AuthenticationMethod.Basic);
         }
 
         [HttpPost("/init-ciba")]
@@ -50,22 +51,22 @@ namespace Vipps.net.AspCore31Demo.Controllers
             InitCibaRequest initCibaRequest = new InitCibaRequest
             {
                 Scope = "openid email name phoneNumber", 
-                PhoneNumber = "47375750", 
+                PhoneNumber = "12345678", 
                 BindingMessage = "XYZ-123",
             };
-            return await LoginService.InitCiba(initCibaRequest, AuthenticationMethod.Basic);
+            return await _loginService.InitCiba(initCibaRequest, AuthenticationMethod.Basic);
         }
 
         [HttpPost("/ciba-token-no-redirect{authReqId}")]
         public async Task<OauthTokenResponse> GetCibaTokenNoRedirect(string authReqId)
         {
-            return await LoginService.GetCibaTokenNoRedirect(authReqId, AuthenticationMethod.Basic);
+            return await _loginService.GetCibaTokenNoRedirect(authReqId, AuthenticationMethod.Basic);
         }
 
         [HttpPost("/ciba-token-redirect{code}")]
         public async Task<OauthTokenResponse> GetCibaTokenRedirect(string code)
         {
-            return await LoginService.GetCibaTokenRedirect(code, AuthenticationMethod.Basic);
+            return await _loginService.GetCibaTokenRedirect(code, AuthenticationMethod.Basic);
         }
     }
 }

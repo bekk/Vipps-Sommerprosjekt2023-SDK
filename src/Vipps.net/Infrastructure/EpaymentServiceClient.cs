@@ -9,14 +9,22 @@ namespace Vipps.net.Infrastructure
 {
     internal sealed class EpaymentServiceClient : BaseServiceClient
     {
-        internal EpaymentServiceClient(IVippsHttpClient vippsHttpClient)
-            : base(vippsHttpClient) { }
+        private readonly VippsConfigurationOptions _vippsConfigurationOptions;
+        private readonly VippsAccessTokenService _accessTokenService; 
+
+        internal EpaymentServiceClient(IVippsHttpClient vippsHttpClient,
+            VippsConfigurationOptions vippsConfigurationOptions, VippsAccessTokenService accessTokenService)
+            : base(vippsHttpClient)
+        {
+            _vippsConfigurationOptions = vippsConfigurationOptions;
+            _accessTokenService = accessTokenService; 
+        }
 
         protected override async Task<Dictionary<string, string>> GetHeaders(
             CancellationToken cancellationToken
         )
         {
-            var authToken = await AccessTokenService.GetAccessToken(cancellationToken);
+            var authToken = await _accessTokenService.GetAccessToken(cancellationToken);
             var headers = new Dictionary<string, string>
             {
                 {
@@ -24,7 +32,7 @@ namespace Vipps.net.Infrastructure
                     $"{Constants.AuthorizationSchemeNameBearer} {authToken.Token}"
                 },
                 { "Idempotency-Key", Guid.NewGuid().ToString() },
-                { Constants.SubscriptionKey, VippsConfiguration.SubscriptionKey }
+                { Constants.SubscriptionKey, _vippsConfigurationOptions.SubscriptionKey }
             };
             return headers;
         }
