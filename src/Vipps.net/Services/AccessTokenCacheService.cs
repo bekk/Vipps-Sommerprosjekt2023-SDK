@@ -24,7 +24,8 @@ namespace Vipps.net.Services
         public AccessTokenCacheService()
         {
             _lifetimeService = new AccessTokenLifetimeService();
-            _dictionary = new ConcurrentDictionary<string, (AccessToken token, DateTimeOffset validTo)>();
+            _dictionary =
+                new ConcurrentDictionary<string, (AccessToken token, DateTimeOffset validTo)>();
         }
 
         public void Add(string key, AccessToken token)

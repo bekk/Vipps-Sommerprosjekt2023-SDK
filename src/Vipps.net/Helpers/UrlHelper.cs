@@ -4,9 +4,7 @@
     {
         public static string GetBaseUrl(bool isTestMode)
         {
-            return isTestMode
-                ? "https://apitest.vipps.no"
-                : "https://api.vipps.no";
+            return isTestMode ? "https://apitest.vipps.no" : "https://api.vipps.no";
         }
     }
 }

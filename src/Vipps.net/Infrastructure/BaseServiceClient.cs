@@ -46,7 +46,7 @@ namespace Vipps.net.Infrastructure
             string path,
             HttpMethod httpMethod,
             TRequest data,
-        CancellationToken cancellationToken = default
+            CancellationToken cancellationToken = default
         )
             where TRequest : class
             where TResponse : class
@@ -58,7 +58,7 @@ namespace Vipps.net.Infrastructure
                 cancellationToken
             );
         }
-        
+
         public async Task ExecuteRequest<TRequest>(
             string path,
             HttpMethod httpMethod,
@@ -226,7 +226,6 @@ namespace Vipps.net.Infrastructure
             headers.Add(key, value);
         }
 
-        
         private static HttpContent CreateFormRequestContent<TRequest>(TRequest vippsRequest)
             where TRequest : class
         {
@@ -238,6 +237,7 @@ namespace Vipps.net.Infrastructure
             var keyValue = ToKeyValue(vippsRequest);
             return new FormUrlEncodedContent(keyValue);
         }
+
         public static IDictionary<string, string> ToKeyValue(object metaToken)
         {
             if (metaToken == null)
@@ -259,7 +259,8 @@ namespace Vipps.net.Infrastructure
                     var childContent = ToKeyValue(child);
                     if (childContent != null)
                     {
-                        contentData = contentData.Concat(childContent)
+                        contentData = contentData
+                            .Concat(childContent)
                             .ToDictionary(k => k.Key, v => v.Value);
                     }
                 }
@@ -273,9 +274,10 @@ namespace Vipps.net.Infrastructure
                 return null;
             }
 
-            var value = jValue?.Type == JTokenType.Date ?
-                jValue?.ToString("o", CultureInfo.InvariantCulture) :
-                jValue?.ToString(CultureInfo.InvariantCulture);
+            var value =
+                jValue?.Type == JTokenType.Date
+                    ? jValue?.ToString("o", CultureInfo.InvariantCulture)
+                    : jValue?.ToString(CultureInfo.InvariantCulture);
 
             return new Dictionary<string, string> { { token.Path, value } };
         }

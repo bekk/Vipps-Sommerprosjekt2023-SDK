@@ -10,14 +10,17 @@ namespace Vipps.net.Infrastructure
     internal sealed class EpaymentServiceClient : BaseServiceClient
     {
         private readonly VippsConfigurationOptions _vippsConfigurationOptions;
-        private readonly VippsAccessTokenService _accessTokenService; 
+        private readonly VippsAccessTokenService _accessTokenService;
 
-        internal EpaymentServiceClient(IVippsHttpClient vippsHttpClient,
-            VippsConfigurationOptions vippsConfigurationOptions, VippsAccessTokenService accessTokenService)
+        internal EpaymentServiceClient(
+            IVippsHttpClient vippsHttpClient,
+            VippsConfigurationOptions vippsConfigurationOptions,
+            VippsAccessTokenService accessTokenService
+        )
             : base(vippsHttpClient)
         {
             _vippsConfigurationOptions = vippsConfigurationOptions;
-            _accessTokenService = accessTokenService; 
+            _accessTokenService = accessTokenService;
         }
 
         protected override async Task<Dictionary<string, string>> GetHeaders(

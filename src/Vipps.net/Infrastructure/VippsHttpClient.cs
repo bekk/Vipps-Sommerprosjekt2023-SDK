@@ -12,7 +12,7 @@ namespace Vipps.net.Infrastructure
         private HttpClient _httpClient;
         private readonly TimeSpan DefaultTimeOut = TimeSpan.FromSeconds(100);
         private readonly VippsConfigurationOptions _options;
-        
+
         public VippsHttpClient(HttpClient httpClient, VippsConfigurationOptions options)
         {
             _httpClient = httpClient;
@@ -42,17 +42,16 @@ namespace Vipps.net.Infrastructure
             CancellationToken cancellationToken
         )
         {
-            
-                var headers = GetHeaders();
-                foreach (var header in headers)
+            var headers = GetHeaders();
+            foreach (var header in headers)
+            {
+                if (request.Headers.Contains(header.Key))
                 {
-                    if (request.Headers.Contains(header.Key))
-                    {
-                        request.Headers.Remove(header.Key);
-                    }
-                
-                    request.Headers.Add(header.Key, header.Value);
+                    request.Headers.Remove(header.Key);
                 }
+
+                request.Headers.Add(header.Key, header.Value);
+            }
 
             var response = await HttpClient
                 .SendAsync(request, cancellationToken)

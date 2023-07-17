@@ -22,11 +22,12 @@ namespace Vipps.net.Services
     internal sealed class VippsCheckoutService : IVippsCheckoutService
     {
         private readonly CheckoutServiceClient _checkoutServiceClient;
+
         public VippsCheckoutService(CheckoutServiceClient checkoutServiceClient)
         {
             _checkoutServiceClient = checkoutServiceClient;
         }
-        
+
         public async Task<InitiateSessionResponse> InitiateSession(
             InitiateSessionRequest initiateSessionRequest,
             CancellationToken cancellationToken = default
@@ -47,12 +48,11 @@ namespace Vipps.net.Services
         )
         {
             var requestPath = $"/checkout/v3/session/{reference}";
-            var getSessionResult =
-                await _checkoutServiceClient.ExecuteRequest<SessionResponse>(
-                    requestPath,
-                    HttpMethod.Get,
-                    cancellationToken
-                );
+            var getSessionResult = await _checkoutServiceClient.ExecuteRequest<SessionResponse>(
+                requestPath,
+                HttpMethod.Get,
+                cancellationToken
+            );
 
             return getSessionResult;
         }
