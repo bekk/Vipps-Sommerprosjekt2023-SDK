@@ -4,23 +4,22 @@ using Microsoft.AspNetCore.Mvc;
 using Vipps.net.Models.Epayment;
 using Vipps.net.Services;
 
-
 namespace Vipps.net.AspCore31Demo.Controllers
 {
     [ApiController]
     [Route("[controller]")]
     public class EpaymentController
     {
-        private readonly IVippsEpaymentService _epaymentService; 
+        private readonly IVippsEpaymentService _epaymentService;
+
         public EpaymentController(IVippsEpaymentService vippsEpaymentService)
         {
-            _epaymentService = vippsEpaymentService; 
+            _epaymentService = vippsEpaymentService;
         }
-        
+
         [HttpPost]
         public async Task<string> CreatePayment()
         {
-
             var request = new CreatePaymentRequest
             {
                 Amount = new Amount { Value = 1000, Currency = Currency.NOK },
@@ -32,10 +31,9 @@ namespace Vipps.net.AspCore31Demo.Controllers
                 PaymentDescription = "paymentDescription",
                 Profile = new ProfileRequest { Scope = "name phoneNumber address birthDate email" },
             };
-            
+
             var result = await _epaymentService.CreatePayment(request);
             return result?.RedirectUrl.ToString();
         }
-
     }
 }

@@ -33,12 +33,12 @@ namespace Vipps.net.AspCore31Demo
                 SubscriptionKey = Environment.GetEnvironmentVariable("OCP_APIM_SUBSCRIPTION_KEY"),
                 UseTestMode = true
             };
-            
+
             var vippsApi = VippsApi.Create(vippsConfigurationOptions);
 
             services.AddSingleton(vippsApi.CheckoutService());
             services.AddSingleton(vippsApi.EpaymentService());
-            services.AddSingleton(vippsApi.LoginService()); 
+            services.AddSingleton(vippsApi.LoginService());
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -57,19 +57,19 @@ namespace Vipps.net.AspCore31Demo
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger(); 
+                app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API Name v1");
                 });
             }
-            
+
             //app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseAuthorization();
-            
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

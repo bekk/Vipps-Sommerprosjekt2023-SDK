@@ -50,14 +50,13 @@ namespace Vipps.net.Services
 
     internal sealed class VippsEpaymentService : IVippsEpaymentService
     {
-
-        private readonly EpaymentServiceClient _epaymentServiceClient; 
+        private readonly EpaymentServiceClient _epaymentServiceClient;
 
         public VippsEpaymentService(EpaymentServiceClient epaymentServiceClient)
         {
             _epaymentServiceClient = epaymentServiceClient;
         }
-        
+
         public async Task<CreatePaymentResponse> CreatePayment(
             CreatePaymentRequest createPaymentRequest,
             CancellationToken cancellationToken = default
@@ -86,9 +85,11 @@ namespace Vipps.net.Services
             CancellationToken cancellationToken = default
         )
         {
-            return await _epaymentServiceClient.ExecuteRequest<
-                IEnumerable<PaymentEvent>
-            >(GetRequestPath(reference, "events"), HttpMethod.Get, cancellationToken);
+            return await _epaymentServiceClient.ExecuteRequest<IEnumerable<PaymentEvent>>(
+                GetRequestPath(reference, "events"),
+                HttpMethod.Get,
+                cancellationToken
+            );
         }
 
         public async Task<ModificationResponse> CancelPayment(

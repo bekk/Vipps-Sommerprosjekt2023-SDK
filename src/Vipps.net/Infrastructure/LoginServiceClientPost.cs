@@ -10,14 +10,10 @@ namespace Vipps.net.Infrastructure
             : base(vippsHttpClient) { }
 
         protected override async Task<Dictionary<string, string>> GetHeaders(
-            CancellationToken cancellationToken 
-        )  
+            CancellationToken cancellationToken
+        )
         {
-            return await Task.FromResult(
-                new Dictionary<string, string>
-                {
-                }
-            );
+            return await Task.FromResult(new Dictionary<string, string> { });
         }
     }
 }

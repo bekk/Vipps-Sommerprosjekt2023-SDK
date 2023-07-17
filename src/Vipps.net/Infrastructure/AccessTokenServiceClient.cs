@@ -9,11 +9,13 @@ namespace Vipps.net.Infrastructure
     {
         private readonly VippsConfigurationOptions _vippsConfigurationOptions;
 
-        internal AccessTokenServiceClient(IVippsHttpClient vippsHttpClient,
-            VippsConfigurationOptions vippsConfigurationOptions)
+        internal AccessTokenServiceClient(
+            IVippsHttpClient vippsHttpClient,
+            VippsConfigurationOptions vippsConfigurationOptions
+        )
             : base(vippsHttpClient)
         {
-            _vippsConfigurationOptions = vippsConfigurationOptions; 
+            _vippsConfigurationOptions = vippsConfigurationOptions;
         }
 
         protected override async Task<Dictionary<string, string>> GetHeaders(

@@ -11,7 +11,7 @@ namespace Vipps.net.Tests
         [TestMethod]
         public void Can_Retrieve_Saved_Valid()
         {
-            var accessTokenCacheService = new AccessTokenCacheService(); 
+            var accessTokenCacheService = new AccessTokenCacheService();
             var key = Guid.NewGuid().ToString();
             var accessToken = GetToken(DateTime.Now.AddHours(-1), DateTime.Now.AddHours(1));
             accessTokenCacheService.Add(key, accessToken);
@@ -22,7 +22,7 @@ namespace Vipps.net.Tests
         [TestMethod]
         public void Can_Not_Retrieve_Saved_Expired()
         {
-            AccessTokenCacheService accessTokenCacheService = new AccessTokenCacheService(); 
+            AccessTokenCacheService accessTokenCacheService = new AccessTokenCacheService();
             var key = Guid.NewGuid().ToString();
             var accessToken = GetToken(DateTime.Now.AddHours(-2), DateTime.Now.AddHours(-1));
             accessTokenCacheService.Add(key, accessToken);
@@ -33,7 +33,7 @@ namespace Vipps.net.Tests
         [TestMethod]
         public void Can_Not_Retrieve_Saved_NotValidForLongEnough()
         {
-            AccessTokenCacheService accessTokenCacheService = new AccessTokenCacheService(); 
+            AccessTokenCacheService accessTokenCacheService = new AccessTokenCacheService();
             var key = Guid.NewGuid().ToString();
             var accessToken = GetToken(DateTime.Now.AddHours(-2), DateTime.Now.AddMinutes(1));
             accessTokenCacheService.Add(key, accessToken);

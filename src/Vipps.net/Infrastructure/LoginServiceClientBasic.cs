@@ -11,24 +11,30 @@ namespace Vipps.net.Infrastructure
     {
         private readonly VippsConfigurationOptions _vippsConfigurationOptions;
 
-        internal LoginServiceClientBasic(IVippsHttpClient vippsHttpClient,
-            VippsConfigurationOptions vippsConfigurationOptions)
+        internal LoginServiceClientBasic(
+            IVippsHttpClient vippsHttpClient,
+            VippsConfigurationOptions vippsConfigurationOptions
+        )
             : base(vippsHttpClient)
         {
-            _vippsConfigurationOptions = vippsConfigurationOptions; 
+            _vippsConfigurationOptions = vippsConfigurationOptions;
         }
 
         protected override async Task<Dictionary<string, string>> GetHeaders(
-            CancellationToken cancellationToken 
+            CancellationToken cancellationToken
         )
         {
             return await Task.FromResult(
                 new Dictionary<string, string>
                 {
-                    {Constants.HeaderNameAuthorization, $"Basic {EncodeCredentials(_vippsConfigurationOptions.ClientId, _vippsConfigurationOptions.ClientSecret)}"}
+                    {
+                        Constants.HeaderNameAuthorization,
+                        $"Basic {EncodeCredentials(_vippsConfigurationOptions.ClientId, _vippsConfigurationOptions.ClientSecret)}"
+                    }
                 }
             );
         }
+
         private static string EncodeCredentials(string clientId, string clientSecret)
         {
             string credentials = clientId + ":" + clientSecret;

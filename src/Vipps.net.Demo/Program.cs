@@ -17,7 +17,7 @@ internal sealed class Program
             new Uri($"https://{host}.vault.azure.net/"),
             new DefaultAzureCredential()
         );
-        
+
         var vippsConfigurationOptions = new VippsConfigurationOptions
         {
             ClientId = builder.Configuration.GetValue<string>("CLIENT-ID")!,
@@ -30,11 +30,11 @@ internal sealed class Program
             PluginName = Assembly.GetExecutingAssembly().GetName().Name,
             PluginVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.0.0"
         };
-        
+
         var vippsAPI = VippsApi.Create(vippsConfigurationOptions);
 
-        builder.Services.AddSingleton<IVippsCheckoutService>(vippsAPI.CheckoutService()); 
-        
+        builder.Services.AddSingleton<IVippsCheckoutService>(vippsAPI.CheckoutService());
+
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -54,7 +54,7 @@ internal sealed class Program
 
         // The following lines initialises VippConfigurationOptions with values fetched from key vault.
 
-        
+
 
         app.UseAuthorization();
 

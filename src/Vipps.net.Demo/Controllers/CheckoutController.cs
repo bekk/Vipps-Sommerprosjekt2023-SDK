@@ -9,12 +9,15 @@ namespace Vipps.net.Demo.Controllers
     public class CheckoutController : ControllerBase
     {
         private readonly ILogger<CheckoutController> _logger;
-        private readonly IVippsCheckoutService _vippsCheckoutService;  
+        private readonly IVippsCheckoutService _vippsCheckoutService;
 
-        public CheckoutController(ILogger<CheckoutController> logger, IVippsCheckoutService vippsCheckoutService)
+        public CheckoutController(
+            ILogger<CheckoutController> logger,
+            IVippsCheckoutService vippsCheckoutService
+        )
         {
             _logger = logger;
-            _vippsCheckoutService = vippsCheckoutService; 
+            _vippsCheckoutService = vippsCheckoutService;
         }
 
         [HttpPost]

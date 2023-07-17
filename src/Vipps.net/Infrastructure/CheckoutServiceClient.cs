@@ -9,8 +9,10 @@ namespace Vipps.net.Infrastructure
     {
         private readonly VippsConfigurationOptions _vippsConfigurationOptions;
 
-        internal CheckoutServiceClient(IVippsHttpClient vippsHttpClient,
-            VippsConfigurationOptions vippsConfigurationOptions)
+        internal CheckoutServiceClient(
+            IVippsHttpClient vippsHttpClient,
+            VippsConfigurationOptions vippsConfigurationOptions
+        )
             : base(vippsHttpClient)
         {
             _vippsConfigurationOptions = vippsConfigurationOptions;
