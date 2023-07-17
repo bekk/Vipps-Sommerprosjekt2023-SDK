@@ -26,7 +26,7 @@ public class LoginServiceTests
     }
 
     [TestMethod]
-    public async Task Get_Start_Login_Uri()
+    public void Get_Start_Login_Uri()
     {
         IVippsApi vippsApi = TestSetup.CreateVippsAPI();
         StartLoginURIRequest startLoginUriRequest = new StartLoginURIRequest()
