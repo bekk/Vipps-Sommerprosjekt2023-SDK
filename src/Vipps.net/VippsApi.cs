@@ -10,6 +10,7 @@ namespace Vipps.net
     {
         IVippsAccessTokenService AccessTokenService();
         IVippsEpaymentService EpaymentService();
+        IVippsLoginService LoginService();
         IVippsCheckoutService CheckoutService();
     }
 
@@ -59,7 +60,16 @@ namespace Vipps.net
                 )
             );
         }
-        
+
+        public IVippsLoginService LoginService()
+        {
+            return new VippsLoginService(
+                _vippsConfigurationOptions,
+                new LoginServiceClientBasic(_vippsHttpClient, _vippsConfigurationOptions),
+                new LoginServiceClientPost(_vippsHttpClient)
+            );
+        }
+
         public IVippsCheckoutService CheckoutService()
         {
             return new VippsCheckoutService(
