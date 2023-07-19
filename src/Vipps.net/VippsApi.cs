@@ -12,6 +12,8 @@ namespace Vipps.net
         IVippsEpaymentService EpaymentService();
         IVippsLoginService LoginService();
         IVippsCheckoutService CheckoutService();
+
+        IVippsWebooksService WebooksService();
     }
 
     public class VippsApi : IVippsApi
@@ -74,6 +76,13 @@ namespace Vipps.net
         {
             return new VippsCheckoutService(
                 new CheckoutServiceClient(_vippsHttpClient, _vippsConfigurationOptions)
+            );
+        }
+
+        public IVippsWebooksService WebooksService()
+        {
+            return new VippsWebhooksService(
+                new WebhooksServiceClient(_vippsHttpClient, _vippsConfigurationOptions, _accessTokenService)
             );
         }
     }

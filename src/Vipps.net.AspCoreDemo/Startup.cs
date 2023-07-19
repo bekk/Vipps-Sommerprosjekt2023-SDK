@@ -39,6 +39,7 @@ namespace Vipps.net.AspCore31Demo
             services.AddSingleton(vippsApi.CheckoutService());
             services.AddSingleton(vippsApi.EpaymentService());
             services.AddSingleton(vippsApi.LoginService());
+            services.AddSingleton(vippsApi.WebooksService());
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

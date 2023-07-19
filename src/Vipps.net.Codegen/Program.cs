@@ -32,8 +32,15 @@ internal sealed class Program
             "Vipps.net.Models.Login",
             "../../../../Vipps.net/Models/LoginModels.cs"
         );
+        
+        var webhooksOptions = new CodegenSettings(
+            "https://vippsas.github.io/vipps-developer-docs/redocusaurus/webhooks-swagger-id.yaml",
+            "VippsWebhooks",
+            "Vipps.net.Models.Webhooks",
+            "../../../../Vipps.net/Models/WebhooksModels.cs"
+        );
 
-        await GenerateCode(httpClient, loginOptions);
+        await GenerateCode(httpClient, webhooksOptions);
     }
 
     private static async Task GenerateCode(HttpClient httpClient, CodegenSettings options)
