@@ -13,7 +13,6 @@ public class WebhooksTests
     {
         IVippsApi vippsApi = TestSetup.CreateVippsAPI();
         
-        // Create webhook
         RegisterRequest registerRequest = new RegisterRequest()
         {
             Url = new Uri("https://webhook.site/ebcd8e27-5031-4dd5-beb7-a2d491cd7641"),
@@ -22,11 +21,11 @@ public class WebhooksTests
                 WebhookEvent.EPaymentCreated
             }
         };
+        
         var createWebhookResponse = await vippsApi.WebooksService().CreateWebhook(registerRequest);
         Assert.IsNotNull(createWebhookResponse.Id);
         Assert.IsNotNull(createWebhookResponse.Secret);
 
-        // Get webhooks
         var getWebHooksResponse = await vippsApi.WebooksService().GetWebhook();
         Assert.IsNotNull(getWebHooksResponse);
         var constainsCreatedWebhook = getWebHooksResponse.Any(webhook =>
@@ -36,7 +35,6 @@ public class WebhooksTests
         Assert.IsTrue(constainsCreatedWebhook);
         
         
-        // Delete webhooks
         await vippsApi.WebooksService().DeleteWebhook(createWebhookResponse.Id.ToString());
     }
 }
